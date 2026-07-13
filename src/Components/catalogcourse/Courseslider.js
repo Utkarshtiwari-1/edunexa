@@ -1,5 +1,3 @@
-import React, { useRef, useState } from 'react';
-// Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
@@ -10,7 +8,7 @@ import 'swiper/css/pagination';
 
 // import required modules
 import { Pagination } from 'swiper/modules';
-import Course_card from './Course_card';
+import CourseCard from './Course_card';
 
  function Courseslider({courses}) {
 
@@ -30,7 +28,7 @@ import Course_card from './Course_card';
         {
            courses &&  courses.map((course)=>(
                 <SwiperSlide key={course._id}>
-                   <Course_card course={course} Height="h-[200px]" Width="w-[300px]"></Course_card>
+                   <CourseCard course={course} Height="h-[200px]" Width="w-[300px]"></CourseCard>
                 </SwiperSlide>
                 
             ))

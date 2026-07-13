@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { useSearchParams } from "react-router-dom";
 import ReactStars from "react-stars";
 import { addreview } from "../../service/operations";
 
@@ -17,7 +16,7 @@ function ReviewModal({setreviewmodal})
     useEffect(()=>{
         setValue("courseExperience","");
         setValue("courseRating",0);
-    },[]);
+    },[setValue]);
 
     function ratingchange(newrating){
         setValue("courseRating",newrating);
@@ -49,7 +48,7 @@ function ReviewModal({setreviewmodal})
                 <div className="h-[2px] bg-richblack-300"></div>
                 <div className="pt-7 pb-5">
                     <div className="flex justify-center gap-4">
-                        <img src={user?.image} className="w-[60px] h-[60px] object-contain
+                        <img src={user?.image} alt={user?.FirstName || "User"} className="w-[60px] h-[60px] object-contain
                          aspect-square rounded-full"></img>
                         <div className="flex flex-col gap-1 text-white">
                            <p className="text-semibold text-xl">{user?.FirstName}</p>

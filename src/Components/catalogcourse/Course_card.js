@@ -1,12 +1,12 @@
 
 import { Link } from "react-router-dom";
 
-function Course_card({course,Height,Width}){
+function CourseCard({course,Height,Width}){
     return(
         <Link to={`/courses/${course._id}`}>
                 <div className="flex flex-col mt-7">
             <div className={`${Height}`}>
-                <img src={course?.thumbnail} alt="Course image" className={`${Height} ${Width} rounded-md aspect-auto object-fill`}></img>
+                <img src={course?.thumbnail} alt={course?.courseName || "Course"} className={`${Height} ${Width} rounded-md aspect-auto object-fill`}></img>
             </div>
             <div className="flex flex-col text-white mt-4">
                 <p className="font-semibold font-inter">{course.courseName}</p>
@@ -22,4 +22,4 @@ function Course_card({course,Height,Width}){
     )
 }
 
-export default Course_card;
+export default CourseCard;

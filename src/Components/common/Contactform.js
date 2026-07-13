@@ -10,7 +10,7 @@ function Contactform(){
 
     const {CONTACTUS_API} = endpoints;
 
-    const [loading,setloading] = useState();
+    const [, setloading] = useState(false);
 
       async  function submithandler(data){
        console.log(data);

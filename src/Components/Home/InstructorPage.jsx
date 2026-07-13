@@ -7,7 +7,7 @@ function InstructorPage(){
     return(
         <div className="w-11/12 flex lg:flex-row md:flex-col sm:flex-col mx-auto pt-20  gap-32">
             <div className="aspect-square">
-                <img src={Instuctor}></img>
+                <img src={Instuctor} alt="Instructor illustration"></img>
             </div>
             <div className="text-white w-[34%] flex flex-col justify-center items-centers">
                 <div className="text-3xl font-inter font-bold"> Become an {" "} <br></br> <HighlightText text={"Instuctor"}></HighlightText></div>

@@ -41,9 +41,9 @@ function Aboutus(){
                  We're passionate about creating a brighter future by offering cutting-edge courses, 
                  leveraging emerging technologies, and nurturing a vibrant learning community.</div>
                  <div className="flex lg:flex-row sm:flex-col gap-6 mt-10">
-                    <img src={about1}></img>
-                    <img src={about2}></img>
-                    <img src={about3}></img>
+                    <img src={about1} alt="About Edunexa illustration"></img>
+                    <img src={about2} alt="About Edunexa illustration"></img>
+                    <img src={about3} alt="About Edunexa illustration"></img>
                  </div>
             </div>
 
@@ -74,7 +74,7 @@ function Aboutus(){
                          and empower individuals from all walks of life to unlock their full potential.</p>
                     </div>
                     <div>
-                        <img src={image1}></img>
+                        <img src={image1} alt="Founding story illustration"></img>
                     </div>
                 </div>
                 <div className="flex lg:flex-row  mt-20 sm:flex-col text-white w-11/12 mx-auto justify-center gap-x-44">

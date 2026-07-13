@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getCatalogdata } from "../service/operations";
 import toast from "react-hot-toast";
@@ -6,7 +6,7 @@ import {categories} from "../service/apis";
 import { apiconnector } from "../service/apiconnector";
 import Footer from "../Components/common/Footer";
 import Courseslider from "../Components/catalogcourse/Courseslider";
-import Course_card from "../Components/catalogcourse/Course_card";
+import CourseCard from "../Components/catalogcourse/Course_card";
  
 function Catalogpage()
 {
@@ -14,14 +14,13 @@ function Catalogpage()
     const {categoryid} = useParams();
     
     console.log("IDD",categoryid);
-    const [id,setid] = useState(categoryid);
     const [catalogpagedata,setcatalogpagedata] = useState({});
     const [sublinks,setsublinks] = useState([]);
     const [categoryname,setcategoryname] = useState(null);
     const [loading,setLoading] = useState(true);
 
     console.log("category id",categoryid);
-    async function getcatalogpagedata()
+    const getcatalogpagedata = useCallback(async()=>
     {
         setLoading(true);
         const result = await getCatalogdata(categoryid);
@@ -35,9 +34,9 @@ function Catalogpage()
             toast.error("Failed to fetch catalogdata");
         }
         setLoading(false);
-    }
+    },[categoryid]);
 
-    async function getsublinks(){
+    const getsublinks = useCallback(async()=>{
        setLoading(true);
         try {
 
@@ -46,14 +45,15 @@ function Catalogpage()
             console.log("call gye");
             console.log(result.data.data);
             setsublinks(result.data.data);
-            const links = result.data.data.filter((link)=>link._id===id);
+            const links = result.data.data.filter((link)=>link._id===categoryid);
             setcategoryname(links[0]);
            
         } catch (error) {
             console.log(error);
         }
        setLoading(false);
-    }
+    },[categoryid]);
+
     useEffect(()=>{
         getsublinks();
 
@@ -61,7 +61,7 @@ function Catalogpage()
         
         //setcategoryname(links[0]);
         
-    },[categoryid])
+    },[getcatalogpagedata, getsublinks])
 
     console.log(sublinks,"sublinks");
         
@@ -108,7 +108,7 @@ function Catalogpage()
                             <div className="grid grid-cols-1 lg:grid-cols-2">
                                 {
                                     catalogpagedata?.mostSellingCourses?.map((course)=>(
-                                        <Course_card key={course._id} course={course} Height="h-[300px]" Width="w-[500px]"></Course_card>
+                                        <CourseCard key={course._id} course={course} Height="h-[300px]" Width="w-[500px]"></CourseCard>
                                     ))
                                 }
                             </div>

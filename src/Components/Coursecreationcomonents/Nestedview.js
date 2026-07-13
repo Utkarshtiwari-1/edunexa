@@ -4,7 +4,6 @@ import { RxDropdownMenu } from "react-icons/rx";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
-import { setLoading } from "../../slices/authslice";
 import { setCourse } from "../../slices/courseSlice";
 import toast from "react-hot-toast";
 import { Deletesection } from "../../service/operations";
@@ -19,7 +18,7 @@ function Nestedview({handleChangeEditSectionName}){
 
     const {course} = useSelector((state)=>state.course);
     const {token} = useSelector((state)=>state.auth);
-    const [loading,setLoading] = useState(false);
+    const [, setLoading] = useState(false);
     const dispatch = useDispatch();
     const [confirmationModal,setconfirmationModal]  = useState(null);
     const [addsubsection,setaddsubsection] = useState(null);

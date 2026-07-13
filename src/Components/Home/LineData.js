@@ -39,7 +39,7 @@ function LineData(){
                     return(
                         <div className="flex gap-5 items-center" key={index}>
                             <div className="h-[40px] z-10 w-[40px] rounded-full bg-richblack-300 flex justify-center items-center">
-                                <img src={element.logo}></img>
+                                <img src={element.logo} alt={element.title}></img>
                             </div>
                             <div className="flex flex-col">
                                 <div>{element.title}</div>

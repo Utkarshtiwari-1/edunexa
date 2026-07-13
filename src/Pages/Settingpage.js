@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from "react-redux";
-import { FaEdit } from "react-icons/fa";
 import { useState } from "react";
 import {updateDisplayPicture} from "../service/operations";
 import Updateyourprofile from "../Components/dashborad/Updateprofile";
@@ -8,7 +7,6 @@ import Deleteyouraccount from "../Components/dashborad/Deleteaccount";
 function Settingpage(){
 
     const [file,setfile] = useState(null);
-    const [loading,setloading] = useState(false);
     const dispatch = useDispatch();
     const {token} = useSelector((state)=>state.auth);
     const {user} = useSelector((state)=>state.profile);
@@ -25,12 +23,10 @@ function Settingpage(){
 
     function submithandler(){
         try {
-            setloading(true);
             const formdata = new FormData();
             formdata.append("displayPicture",file);
             console.log("append ho gya");
             dispatch(updateDisplayPicture(token,formdata));
-            setloading(false);
         } catch (error) {
             console.log("error while dispatching profilepic",error);
         }
@@ -42,7 +38,7 @@ function Settingpage(){
             <h1 className="text-3xl text-white font-semibold font-inter">Edit Profile</h1>
             <div className="flex  mt-10 items-center pr-7 pl-2 h-[100px] bg-richblack-800 w-[70%] rounded-md border border-richblack-600">
                 <div className="flex  items-center ">
-                    <img src={user?.image} width={80} height={80} className=" aspect-square rounded-full"></img>
+                    <img src={user?.image} width={80} height={80} className=" aspect-square rounded-full" alt="Profile preview"></img>
                     
                 </div>
                 <div className="flex flex-col gap-4 items-start ml-5">

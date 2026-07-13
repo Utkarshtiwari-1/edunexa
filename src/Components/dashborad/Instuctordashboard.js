@@ -34,7 +34,7 @@ function Instuctordashboard(){
         getcoursedatawithstats();
 
 
-    },[])
+    },[token])
 
     const totalincome = instructordata?.reduce((acc,curr)=>acc+curr.totalamount,0);
     const totalstudents = instructordata?.reduce((acc,curr)=>acc+curr.totalstudentsenrolled,0);
@@ -80,7 +80,7 @@ function Instuctordashboard(){
                                     {
                                         courses.slice(0,3).map((course)=>(
                                             <div>
-                                                <img src={course.thumbnail} 
+                                                <img src={course.thumbnail} alt={course.courseName || "Course thumbnail"}
                                                 className="h-[180px] w-[300px] object-cover rounded-md"></img>
                                                 <div>
                                                     <p className="font-semibold pt-1">{course.courseName}</p>

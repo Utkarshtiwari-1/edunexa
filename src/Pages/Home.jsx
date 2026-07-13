@@ -1,4 +1,4 @@
-import React, { Children } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { FaArrowRightToBracket } from "react-icons/fa6";
 import HighlightText from '../Components/Home/HighlightText';
@@ -120,7 +120,7 @@ export const Home = () => {
           <LineData></LineData>
           <div className='relative '>
             <div className='lg:w-[500px]  object-cover '>
-              <img src={Timelineimage}></img>
+              <img src={Timelineimage} alt="Timeline illustration"></img>
             </div>
             <div  className='flex bg-caribbeangreen-800 text-white w-[70%] mx-auto h-20 p-3 
             absolute  -bottom-8 left-[15%] '>

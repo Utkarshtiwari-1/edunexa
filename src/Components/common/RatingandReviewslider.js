@@ -13,7 +13,7 @@ function RatingandReviewslider()
 {
     const {REVIEWS_DETAILS_API} = ratingsEndpoints;
     const [ratings,setratings] = useState([]);
-    const [loading,setloading] = useState(false);
+    const [, setloading] = useState(false);
 
     useEffect(()=>{
 
@@ -39,7 +39,7 @@ function RatingandReviewslider()
         }
         getallratings();
 
-    },[])
+    },[REVIEWS_DETAILS_API])
 
     return (
         <>

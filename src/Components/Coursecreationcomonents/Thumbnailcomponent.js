@@ -3,7 +3,7 @@ import { useState } from "react";
 
 function Thumbnailcomponent({type}){
 
-    const[image,setimage] = useState(null);
+    const[, setimage] = useState(null);
 
     function changehandler(e){
        if(e.target.files && e.target.files[0])

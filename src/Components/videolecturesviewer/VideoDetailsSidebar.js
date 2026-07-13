@@ -10,7 +10,7 @@ function VideoDetailsSidebar({setreviewmodal})
 {
     const navigate = useNavigate();
     const {courseid,sectionid,subsectionid} = useParams();
-    const {courseSectionData,courseEntireData,completedLectures,totalNoOfLectures,
+    const {courseSectionData,completedLectures,
         currentsection,currentsubsection
     } = useSelector((state)=>state.viewCourse);
     const dispatch = useDispatch();
@@ -38,7 +38,7 @@ function VideoDetailsSidebar({setreviewmodal})
             console.log("true ar false",completedLectures);
         }
         entirecoursedata();
-    },[location.pathname,courseid,sectionid,subsectionid])
+    },[completedLectures, courseid, currentsection, currentsubsection, dispatch, location.pathname, sectionid, subsectionid])
 
     
 

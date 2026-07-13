@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 import Rendersteps from "./Rendersteps";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setCourse, setEditCourse } from "../../slices/courseSlice";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { apiconnector } from "../../service/apiconnector";
 import toast from "react-hot-toast";
 import { courseEndpoints } from "../../service/apis";
@@ -13,7 +13,7 @@ function EditCourse()
     const dispatch = useDispatch();
     const {COURSE_DETAILS_API} = courseEndpoints;
 
-    async function getcoursedetails(){
+    const getcoursedetails = useCallback(async()=>{
        const toastId =  toast.loading("Loading...");
         try {
             const response = await apiconnector('POST',COURSE_DETAILS_API,{courseid});
@@ -35,12 +35,12 @@ function EditCourse()
         toast.dismiss(toastId);
        
 
-    }
+    },[COURSE_DETAILS_API, courseid, dispatch]);
 
     useEffect(()=>{
         dispatch(setEditCourse(true));
         getcoursedetails();
-    },[]);
+    },[dispatch, getcoursedetails]);
 
     return(
         <div>

@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { buycourse } from "../service/operations";
 import { useEffect, useState } from "react";
 import {getfullcoursedetais} from "../service/operations";
@@ -26,9 +26,8 @@ function CourseDetails()
     const [coursedetails,setcoursedetails] = useState(null);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [loading,setloading] = useState(false);
+    const [, setloading] = useState(false);
     const [rating,setrating] = useState(4.5);
-    const location = useLocation();
     const [sections,setsections] = useState(0);
     const [subsec,setsubsec] = useState(0);
     const [opensection,setopensection] = useState([]);
@@ -50,23 +49,32 @@ function CourseDetails()
     }
 
     useEffect(()=>{
-        getcoursedetails(courseid);
-        console.log(coursedetails,"coursedetaisl");
-        const sec = coursedetails?.course?.courseContent.length;
-        setsections(sec);
+        const fetchCourseDetails = async()=>{
+            await getcoursedetails(courseid);
+        };
+        fetchCourseDetails();
+    },[courseid]);
+
+    useEffect(()=>{
+        if(!coursedetails?.course?.courseContent){
+            return;
+        }
+
+        const sec = coursedetails.course.courseContent.length;
         let subSection = 0;
-        coursedetails?.course?.courseContent.forEach((section)=>{
-            let seclec  = 0;
-            section?.subsection?.forEach((subsect)=>{
+        const lectureCounts = coursedetails.course.courseContent.map((section)=>{
+            let seclec = 0;
+            section?.subsection?.forEach(()=>{
                 subSection += 1;
                 seclec += 1;
-            })
-            setsectionlec([...sectionlec,seclec]);
-        })
+            });
+            return seclec;
+        });
+
+        setsections(sec);
+        setsectionlec(lectureCounts);
         setsubsec(subSection);
-        
-        
-    },[]);
+    },[coursedetails]);
 
     function handlebuycourse()
     {
@@ -134,7 +142,7 @@ function CourseDetails()
                     </div>
                     <div className="lg:absolute bg-richblack-700 pb-6 rounded-md lg:top-[80px] lg:right-20">
                         <div>
-                            <img src={coursedetails?.course?.thumbnail} 
+                            <img src={coursedetails?.course?.thumbnail} alt={coursedetails?.course?.courseName || "Course thumbnail"}
                             className="lg:w-[350px] lg:h-[200px] rounded-md object-cover "></img>
                         </div>
                         <div className="pl-4 pr-4">
@@ -216,7 +224,7 @@ function CourseDetails()
                     <div className="pt-5 pb-10">
                         <div className="text-white text-2xl font-semibold font-inter">Author</div>
                         <div className="flex items-center gap-4 pt-2">
-                            <img src={coursedetails?.course?.instuctor?.image} className="w-[50px] h-[50px] aspect-square rounded-full
+                            <img src={coursedetails?.course?.instuctor?.image} alt={coursedetails?.course?.instuctor?.FirstName || "Instructor"} className="w-[50px] h-[50px] aspect-square rounded-full
                              object-cover"></img>
                             <div className="text-white">{coursedetails?.course?.instuctor?.FirstName} {coursedetails?.course?.instuctor?.LastName}</div>
                         </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,7 @@ function InstructorCourse(){
     const [courses,setcourses] = useState([]);
     const {token} = useSelector((state)=>state.auth);
 
-    async function getallcoursesofinstructor()
+    const getallcoursesofinstructor = useCallback(async()=>
     {
         const result = await getallcourses(token);
         if(result)
@@ -22,13 +22,12 @@ function InstructorCourse(){
         {
             toast.error("Something went wrong");
         }
-    }
+    },[token]);
 
     useEffect(()=>{
 
         getallcoursesofinstructor();
-        console.log(courses);
-    },[]);
+    },[getallcoursesofinstructor]);
 
     return(
         <div>

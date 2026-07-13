@@ -1,6 +1,5 @@
 import { useSelector } from "react-redux";
 import { FaCheckCircle } from "react-icons/fa";
-import { IoTerminalSharp } from "react-icons/io5";
 import Coursebuilderform from "./Coursebuilderform";
 import Courseinfoform from "./Courseinfoform";
 import Publishform from "./Publishform";

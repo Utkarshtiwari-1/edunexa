@@ -20,7 +20,7 @@ function SubsectionModal(
 {
 
     const {register,handleSubmit,setValue,formState:{errors},getValues} = useForm();
-    const [loading,setLoading] = useState(false);
+    const [, setLoading] = useState(false);
     const {token} = useSelector((state)=>state.auth);
     const {course} = useSelector((state)=>state.course);
     const dispatch = useDispatch();
@@ -32,7 +32,7 @@ function SubsectionModal(
             setValue("LectureDesc",modaldata.description);
             setValue("LectureVideo",modaldata.videoUrl);
         }
-    },[]);
+    },[edit, modaldata?.description, modaldata?.title, modaldata?.videoUrl, setValue, view]);
 
     const isformupdated = ()=>{
         const currentvalues = getValues();

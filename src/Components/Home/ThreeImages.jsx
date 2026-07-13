@@ -11,9 +11,9 @@ function ThreeImages(){
             <div className="w-[45%] pt-3 text-center text-sm text-richblack-700">using spin making learning multiple languages easy. with 20+ languages realstic voice 
             over, progress tracking, custom schedule and more.</div>
             <div className="flex lg:flex-row  md:flex-col sm:flex-col pt-6 ">
-                <img src={img1} className=" object-contain lg:translate-x-28 "></img>
-                <img src={img2} className=" object-contain z-10"></img>
-                <img src={img3} className=" object-contain lg:-translate-x-36 z-30"></img>
+                <img src={img1} alt="Progress tracking feature" className=" object-contain lg:translate-x-28 "></img>
+                <img src={img2} alt="Comparison with others feature" className=" object-contain z-10"></img>
+                <img src={img3} alt="Lesson planning feature" className=" object-contain lg:-translate-x-36 z-30"></img>
             </div>
             <div className="pt-4">
                 <CTAButton linkto={"/signup"} active={true}>Learn More</CTAButton>

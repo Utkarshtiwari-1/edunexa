@@ -1,12 +1,10 @@
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import {setLoading,setToken} from "../slices/authslice";
 import { apiconnector } from "./apiconnector";
 import {catalogData, courseEndpoints, endpoints, profileEndpoints, studentEndpoints} from "./apis";
 import {setUser,setImage} from "../slices/Profileslice";
-import { LuArrowUpWideNarrow } from "react-icons/lu";
 import { settingsEndpoints } from "./apis";
 import rzplogo from "../assets/Logo/Logo-Small-Dark.png";
-import { useRouteLoaderData } from "react-router-dom";
 import { resetcart } from "../slices/cartslice";
 
 const {

@@ -12,8 +12,8 @@ function Coursebuilderform(){
 
     const [editsecname,seteditsecname] = useState(null);
     const {course} = useSelector((state)=>state.course);
-    const {register,handleSubmit,setValue,getValues,formState:{errors}} = useForm();
-    const [loading,setLoading] = useState(false);
+    const {register,handleSubmit,setValue} = useForm();
+    const [, setLoading] = useState(false);
     const dispatch = useDispatch();
     const {token} = useSelector((state)=>state.auth);
 

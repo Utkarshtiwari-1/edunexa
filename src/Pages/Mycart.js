@@ -7,7 +7,6 @@ import toast from "react-hot-toast";
 import { buycourse } from "../service/operations";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { resetcart } from "../slices/cartslice";
 
 function Mycart()
 {
@@ -26,10 +25,13 @@ function Mycart()
     }
 
     useEffect(()=>{
-        cartitems.length>0 && cartitems.forEach((course)=>{
-            setcourses([...courses,course._id]);
-        })
-    },[]);
+        if(cartitems.length>0){
+            setcourses(cartitems.map((course)=>course._id));
+        }
+        else{
+            setcourses([]);
+        }
+    },[cartitems]);
 
     async function handlebuycourse()
     {
@@ -59,7 +61,7 @@ function Mycart()
                                     
                                     <div className="mt-2 mb-2 flex gap-3 text-white justify-between p-3 border-b border-blue-700">
                                         <div className="flex gap-4">
-                                            <img src={course.thumbnail} className="h-[120px] w-[200px] object-cover
+                                            <img src={course.thumbnail} alt={course?.courseName || "Course thumbnail"} className="h-[120px] w-[200px] object-cover
                                             rounded-md"></img>
                                             <div className="flex flex-col gap-2">
                                                 <div>{course?.courseName}</div>

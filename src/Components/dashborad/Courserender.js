@@ -37,7 +37,7 @@ function Courserender({coursedata,getallcoursesofinstructor}){
             <div className="flex justify-between p-3 mt-2 h-[150px]">
             <div className="flex text-sm   text-richblack-50 ">
                 <div className="h-[200px] w-[200px] rounded-lg ">
-                    <img src={coursedata.thumbnail} className="rounded-md h-[120px] w-[200px] object-cover"></img>
+                    <img src={coursedata.thumbnail} alt={coursedata.courseName || "Course thumbnail"} className="rounded-md h-[120px] w-[200px] object-cover"></img>
                 </div>
                 <div className="flex flex-col pl-11 gap-3 ">
                     <p className="text-2xl text-richblack-100 font-semibold">{coursedata.courseName}</p>

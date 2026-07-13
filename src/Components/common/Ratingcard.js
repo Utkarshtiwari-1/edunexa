@@ -5,7 +5,7 @@ function Ratingcard({rating,Height,Width}){
     return(
         <div className={` bg-richblack-800 p-4 rounded-sm ${Width} text-white`}>
             <div className="flex gap-3">
-                <img src={rating?.user?.image} className="h-[50px] w-[50px] aspect-square rounded-full"></img>
+                <img src={rating?.user?.image} alt={rating?.user?.FirstName || "Reviewer"} className="h-[50px] w-[50px] aspect-square rounded-full"></img>
                 <div>
                     <p className="text-sm ">{rating?.user?.FirstName}</p>
                     <p className="text-sm text-richblack-400">{rating?.user?.email}</p>

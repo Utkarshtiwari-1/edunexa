@@ -28,13 +28,13 @@ function Chiptagcomponent({label,name,register,setValue}){
 
     useEffect(()=>{
         register(name);
-    },[]);
+    },[name, register]);
 
     //,{ required: true, validate: (value) => value.length > 0 }
 
     useEffect(()=>{
         setValue(name,taglist);
-    },[taglist]);
+    },[name, setValue, taglist]);
 
     return(
         <div>

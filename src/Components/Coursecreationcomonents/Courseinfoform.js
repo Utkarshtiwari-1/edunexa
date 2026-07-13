@@ -5,7 +5,6 @@ import {apiconnector} from "../../service/apiconnector"
 import { courseEndpoints } from "../../service/apis";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import Chiptagcomponent from "./Chiptagcomponent";
-import Thumbnailcomponent from "./Thumbnailcomponent";
 import Requirementfeild from "./Requirementfeild";
 import { useDispatch, useSelector } from "react-redux";
 import { setStep,setCourse } from "../../slices/courseSlice";
@@ -59,6 +58,7 @@ function Courseinfoform(){
 
         }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
     const isFormUpdated = () => {

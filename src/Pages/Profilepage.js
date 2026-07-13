@@ -11,7 +11,7 @@ function Profilepage(){
             <h1 className="text-3xl text-white font-semibold font-inter translate-x-[-100px]">My Profile</h1>
             <div className="flex justify-between mt-10 items-center min-h-[150px] pr-7 pl-2 bg-richblack-800 w-[70%] rounded-md border border-richblack-600">
                 <div className="flex  items-center ">
-                    <img src={user?.image} width={100} height={100} className=" aspect-square rounded-full"></img>
+                    <img src={user?.image} width={100} height={100} className=" aspect-square rounded-full" alt={`${user?.FirstName || "User"} profile`}></img>
                     <div className="flex flex-col items-start ml-5">
                         <p className="text-xl text-white ">{user?.FirstName}{" "}{user?.LastName}</p>
                         <p className="text-richblack-300 text-sm">{user?.email}</p>

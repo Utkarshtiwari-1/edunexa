@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { profileEndpoints } from "../service/apis";
 import { apiconnector } from "../service/apiconnector";
 import ProgressBar from "@ramonak/react-progress-bar";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 function Enrolledcourses(){
@@ -14,7 +14,7 @@ function Enrolledcourses(){
     const [enrolledcourses,setenrolledcourses] = useState(null);
     const navigate = useNavigate();
 
-    async function Getcourses(){
+    const Getcourses = useCallback(async()=>{
         try {
 
             const response = await apiconnector("GET",GET_USER_ENROLLED_COURSES_API,null,{
@@ -32,11 +32,11 @@ function Enrolledcourses(){
             console.log(error);
 
         }
-    }
+    },[GET_USER_ENROLLED_COURSES_API, token]);
 
     useEffect(()=>{
         Getcourses();
-    },[]);
+    },[Getcourses]);
     return(
         <div>
             <div className="text-2xl text-white font-semibold font-inter">Enrolled Courses</div>
@@ -61,7 +61,7 @@ function Enrolledcourses(){
                                         <div onClick={()=>navigate(`/dashboard/course/${course?._id}/section/${course?.courseContent[0]?._id}
                                     /sub-section/${course?.courseContent[0]?.subsection[0]?._id}`)}>
                                             <div className="flex gap-5 items-center cursor-pointer">
-                                                <img src={course.thumbnail} className="w-[130px] h-[130px] object-contain rounded-md"></img>
+                                                <img src={course.thumbnail} alt={course.courseName || "Course thumbnail"} className="w-[130px] h-[130px] object-contain rounded-md"></img>
                                                 <div className="flex flex-col text-white">
                                                     <p className="font-semibold font-inter">{course.courseName}</p>
                                                     <p className="text-richblack-400">{course.courseDescription}</p>
