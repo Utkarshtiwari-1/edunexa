@@ -17,17 +17,22 @@ const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:3000")
 app.set("trust proxy", 1);
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieparser());
+// app.use(cors({
+//     origin(origin, callback) {
+//         // Requests without an Origin header include health checks and server-to-server calls.
+//         if (!origin || allowedOrigins.includes(origin)) {
+//             return callback(null, true);
+//         }
+//         const error = new Error("Origin is not allowed by CORS");
+//         error.status = 403;
+//         return callback(error);
+//     },
+//     credentials: true,
+// }));
+
 app.use(cors({
-    origin(origin, callback) {
-        // Requests without an Origin header include health checks and server-to-server calls.
-        if (!origin || allowedOrigins.includes(origin)) {
-            return callback(null, true);
-        }
-        const error = new Error("Origin is not allowed by CORS");
-        error.status = 403;
-        return callback(error);
-    },
-    credentials: true,
+    origin:"*",
+    credentials:true,
 }));
 
 app.use(fileupload({
