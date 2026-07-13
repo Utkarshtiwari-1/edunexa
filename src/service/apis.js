@@ -1,7 +1,7 @@
 
 
 
-const BASE_URL = "https://studynotion-backend-3.onrender.com/api/v1";
+const BASE_URL = "https://edunexa-2.onrender.com/api/v1";
 
 // AUTH ENDPOINTS
 export const endpoints = {
