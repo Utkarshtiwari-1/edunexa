@@ -15,9 +15,9 @@ const mailsender = async (email, title, html) => {
             pass: process.env.MAIL_PASS,
         },
         // Do not leave the signup request hanging for Nodemailer's default timeout.
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 15000,
+        // connectionTimeout: 10000,
+        // greetingTimeout: 10000,
+        // socketTimeout: 15000,
     });
 
     return transporter.sendMail({
