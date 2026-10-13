@@ -50,7 +50,6 @@ export function Getpasswordresettoken(email,setemailsent){
 
             const response = await apiconnector("POST",RESETPASSTOKEN_API,{email,});
             
-            console.log("token response",response);
 
             if(!response.data.sucsess)
             {
@@ -59,11 +58,11 @@ export function Getpasswordresettoken(email,setemailsent){
 
             
 
-            toast.success("token email sent sucsessfully");
+            toast.success("Reset email accepted for sending");
             setemailsent(true);
             
         } catch (error) {
-            console.log(error);
+            toast.error(error.response?.data?.message || "Unable to request a password reset email");
         }
 
         dispatch(setLoading(false));
@@ -78,7 +77,6 @@ export function resetpassword(password,confirmpassword,token,setpasswordreset){
             
             const response = await apiconnector("POST",RESETPASSWORD_API,{password,confirmpassword,token});
 
-            console.log("reset password response",response);
 
             if(!response.data.sucsees)
             {
@@ -89,7 +87,7 @@ export function resetpassword(password,confirmpassword,token,setpasswordreset){
             setpasswordreset(true);
 
         } catch (error) {
-            console.log(error);
+            toast.error(error.response?.data?.message || "Unable to reset password");
         }
 
         dispatch(setLoading(false));
@@ -101,7 +99,6 @@ export function Signupuser(FirstName,LastName,email,password,confirmpassword,acc
         dispatch(setLoading(true));
         try {
             
-            console.log(FirstName,LastName,email,password,confirmpassword,accountType,otp);
 
             const response = await apiconnector("POST",SIGNUP_API,{
                 FirstName,
@@ -113,7 +110,6 @@ export function Signupuser(FirstName,LastName,email,password,confirmpassword,acc
                 otp,
             });
 
-            console.log("signup response",response);
 
             if(!response.data.sucsess)
             {
@@ -124,11 +120,7 @@ export function Signupuser(FirstName,LastName,email,password,confirmpassword,acc
             navigate("/login");
 
         } catch (error) {
-            console.log(error);
-            if(error.response.data.message==="user already exist")
-            {
-                toast.error("User already exist");
-            }
+            toast.error(error.response?.data?.message || "Unable to create your account");
         }
 
         dispatch(setLoading(false));
@@ -144,7 +136,6 @@ export function loginuser(email,password,navigate){
 
             const response = await apiconnector("POST",LOGIN_API,{email,password});
 
-            console.log("login response",response);
 
             if(!response.data.succsess)
             {
@@ -163,10 +154,8 @@ export function loginuser(email,password,navigate){
             navigate("/");
             
         } catch (error) {
-
-            console.log(error.response.data.message);
-
-            if(error.response.data.message==="password does not match")
+            const message = error.response?.data?.message;
+            if(message==="password does not match")
             {
                 toast.error("incorrect password")
             }
@@ -206,18 +195,18 @@ export function Otpsender(email,navigate){
             
             const response = await apiconnector("POST",SENDOTP_API,{email});
            // console.log("otp sending response",response);
-            if(!response.data.succsess)
-            {
-                throw new Error(response.data.message);
+            const requestSucceeded = response.data.success ?? response.data.succsess ?? response.data.sucsess;
+            if (!requestSucceeded) {
+                throw new Error(response.data.message || "Unable to send the verification email.");
             }
 
             navigate("/signup/otpverification");
         } catch (error) {
-            console.log(error);
-            toast.error(
-                error.response?.data?.message ||
-                "Unable to send the verification email. Please try again."
-            );
+            const message = error.response?.data?.message ||
+                (error.request
+                    ? "Could not reach the API. Check that the backend is running and the API URL is correct."
+                    : error.message || "Unable to send the verification email. Please try again.");
+            toast.error(message);
         }
 
         dispatch(setLoading(false));

@@ -1,7 +1,10 @@
 
 
 
-const BASE_URL = "https://edunexa-2.onrender.com/api/v1";
+const DEFAULT_API_BASE_URL = process.env.NODE_ENV === "development"
+  ? "http://localhost:4000/api/v1"
+  : "https://edunexa-2.onrender.com/api/v1";
+const BASE_URL = (process.env.REACT_APP_API_BASE_URL || DEFAULT_API_BASE_URL).replace(/\/$/, "");
 
 // AUTH ENDPOINTS
 export const endpoints = {

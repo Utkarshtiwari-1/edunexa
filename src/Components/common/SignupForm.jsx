@@ -96,7 +96,7 @@ export default function SignupForm() {
                     <input
                         name='email'
                         value={formData.email}
-                        type='text'
+                        type='email'
                         required
                         onChange={changeHandler}
                         className='form-input'

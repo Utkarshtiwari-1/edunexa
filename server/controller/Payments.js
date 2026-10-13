@@ -88,7 +88,7 @@ exports.verifySignature = async (req, res) => {
             user.email,
             "Course enrollment confirmed",
             `You are enrolled in ${course.courseName}.`
-        ))).catch((error) => console.error("Enrollment email failed", error.message));
+        ))).catch(() => console.error("Enrollment email submission failed"));
 
         return res.status(200).json({ succsess: true, message: "Payment verified and courses enrolled" });
     } catch (error) {

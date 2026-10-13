@@ -49,12 +49,12 @@ function Updatepassword(){
                                 <form onSubmit={submithandler}>
                                     <label className="relative">
                                         <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-richblack-5">New Password <sup className="text-pink-200">*</sup></p>
-                                        <input required type="text" value={formdata.password} name="password"
+                                        <input required type="password" autoComplete="new-password" value={formdata.password} name="password"
                                          onChange={changehandler} className="bg-richblack-600"></input>
                                     </label>
                                     <label className="relative mt-3 block">
                                         <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-richblack-5">confirm New Password <sup  className="text-pink-200">*</sup></p>
-                                        <input required type="text" value={formdata.confirmpassword} name="confirmpassword"
+                                        <input required type="password" autoComplete="new-password" value={formdata.confirmpassword} name="confirmpassword"
                                          onChange={changehandler} className="bg-richblack-600"></input>
                                     </label>
                                     <button type="submit"

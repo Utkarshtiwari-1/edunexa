@@ -1,4 +1,3 @@
-const otpGenerator = require("otp-generator");
 const OTP = require("../Models/OTP");
 const User = require("../Models/User");
 const bcrypt = require("bcrypt");
@@ -7,85 +6,99 @@ const jwt = require("jsonwebtoken");
 
 const mailsender = require("../Utils/mailsender");
 const emailTemplate = require("../mail/templates/emailVerificationTemplate");
+const { OTP_TTL_MS, OTP_RESEND_INTERVAL_MS, OTP_MAX_ATTEMPTS, OTP_PURPOSE, generateOtp, hashOtp, isOtpMatch } = require("../Utils/otp");
 require("dotenv").config();
 
 //otp generator 
 exports.sendOtp = async(req,res)=>{
-    try {
-
-        //fetch email
-    const email = req.body.email?.trim().toLowerCase();
-    if (!email) {
-        return res.status(400).json({ succsess: false, message: "Email is required" });
+    const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : "";
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ succsess: false, message: "A valid email is required" });
     }
-
-    //check if user already exist
-    const userexist = await User.findOne({email});
-    if(userexist)
-    {
-        return res.status(401).json({
-            succsess:false,
-            message:"user already exist ",
-        });
-    }
-
-    let otp = otpGenerator.generate(6,{
-        upperCaseAlphabets:false,
-        lowerCaseAlphabets:false,
-        specialChars:false,
-    });
-
-    //check unique otp or not
-
-    let result = await OTP.findOne({otp:otp});
-
-    while(result)
-    {
-        otp = otpGenerator.generate(6,{
-            upperCaseAlphabets:false,
-            lowerCaseAlphabets:false,
-            specialChars:false,
-        });
-
-        result = await OTP.findOne({otp:otp});
-
-    }
-
-    // Save first so the OTP can be verified only after a successful delivery.
-    const otpbody = await OTP.create({email, otp});
 
     try {
-        const mailResponse = await mailsender(
-            email,
-            "Your StudyNotion verification code",
-            emailTemplate(otp)
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            return res.status(401).json({ succsess: false, message: "user already exist " });
+        }
+
+        const now = new Date();
+        const otp = generateOtp();
+        const pendingToken = require("crypto").randomUUID();
+        let reservation;
+        try {
+            reservation = await OTP.findOneAndUpdate(
+                {
+                    email,
+                    purpose: OTP_PURPOSE,
+                    $or: [
+                        { lastSentAt: { $exists: false } },
+                        { lastSentAt: { $lte: new Date(now.getTime() - OTP_RESEND_INTERVAL_MS) } },
+                    ],
+                },
+                {
+                    $set: {
+                        email,
+                        purpose: OTP_PURPOSE,
+                        lastSentAt: now,
+                        createdAt: now,
+                        purgeAt: new Date(now.getTime() + OTP_TTL_MS),
+                        pendingHash: hashOtp(email, OTP_PURPOSE, otp),
+                        pendingToken,
+                    },
+                    $setOnInsert: {
+                        attempts: 0,
+                        consumedAt: null,
+                    },
+                },
+                { new: true, upsert: true, setDefaultsOnInsert: true, timestamps: false, overwriteImmutable: true }
+            );
+        } catch (error) {
+            if (error.code === 11000) {
+                return res.status(429).json({ succsess: false, message: "Please wait before requesting another code." });
+            }
+            throw error;
+        }
+
+        try {
+            await mailsender(email, "Your Edunexa verification code", emailTemplate(otp));
+        } catch (_) {
+            await OTP.updateOne(
+                { _id: reservation._id, pendingToken },
+                { $unset: { pendingHash: 1, pendingToken: 1 } }
+            );
+            console.error("Verification email submission failed");
+            return res.status(503).json({
+                succsess: false,
+                message: "Unable to send the verification email. Please try again shortly.",
+            });
+        }
+
+        const activated = await OTP.updateOne(
+            { _id: reservation._id, pendingToken },
+            {
+                $set: {
+                    otpHash: reservation.pendingHash,
+                    otpExpiresAt: new Date(now.getTime() + OTP_TTL_MS),
+                    purgeAt: new Date(now.getTime() + OTP_TTL_MS),
+                    attempts: 0,
+                    consumedAt: null,
+                },
+                $unset: { pendingHash: 1, pendingToken: 1 },
+            }
         );
-        console.log("OTP email accepted by provider", mailResponse.messageId);
-    } catch (mailError) {
-        // Do not keep an OTP that the user did not receive.
-        await OTP.findByIdAndDelete(otpbody._id);
-        console.error("Unable to send OTP email", {
-            code: mailError.code,
-            message: mailError.message,
-        });
-        return res.status(503).json({
-            succsess: false,
-            message: "Unable to send the verification email. Please try again shortly.",
-        });
-    }
+        if (!activated.modifiedCount) {
+            console.error("Verification email was accepted but code activation failed");
+            return res.status(503).json({ succsess: false, message: "Unable to complete verification. Please request a new code." });
+        }
 
-    return res.status(200).json({
-        succsess:true,
-        message:"otp genrated and send ",
-    })
-        
-    } catch (error) {
-        
-        console.log("error in otp generator",error);
-        return res.status(500).json({
-            sucsess:false,
-            message:"some error with otp generation",
-        })
+        return res.status(200).json({
+            succsess: true,
+            message: "Verification email accepted for sending",
+        });
+    } catch (_) {
+        console.error("Unable to process verification code request");
+        return res.status(500).json({ sucsess: false, message: "some error with otp generation" });
     }
 }
 
@@ -127,22 +140,44 @@ exports.signUp = async(req,res)=>{
             });
         }
 
-        //fetch recent otp from the db for this user
-        const recentotp = await OTP.find({email: normalizedEmail}).sort({createdAt:-1}).limit(1);
+        if (!/^\d{6}$/.test(String(otp))) {
+            return res.status(400).json({ sucsess: false, message: "Invalid OTP" });
+        }
 
-        if(recentotp.length==0)
-        {
-            return res.status(400).json({
-                sucsess:false,
-                message:"otp not found in db",
+        const otpRecord = await OTP.findOne({ email: normalizedEmail, purpose: OTP_PURPOSE });
+        const now = new Date();
+        if (otpRecord?.attempts >= OTP_MAX_ATTEMPTS) {
+            return res.status(429).json({ sucsess: false, message: "Too many incorrect codes. Request a new code." });
+        }
+        if (!otpRecord || !otpRecord.otpHash || otpRecord.consumedAt || !otpRecord.otpExpiresAt || otpRecord.otpExpiresAt <= now) {
+            return res.status(400).json({ sucsess: false, message: "OTP is invalid or expired. Request a new code." });
+        }
+
+        const suppliedHash = hashOtp(normalizedEmail, OTP_PURPOSE, String(otp));
+        if (!isOtpMatch(otpRecord.otpHash, suppliedHash)) {
+            const attempt = await OTP.updateOne(
+                { _id: otpRecord._id, consumedAt: null, otpExpiresAt: { $gt: now }, attempts: { $lt: OTP_MAX_ATTEMPTS } },
+                { $inc: { attempts: 1 } }
+            );
+            const attemptsUsed = otpRecord.attempts + (attempt.modifiedCount ? 1 : 0);
+            return res.status(attemptsUsed >= OTP_MAX_ATTEMPTS ? 429 : 401).json({
+                sucsess: false,
+                message: attemptsUsed >= OTP_MAX_ATTEMPTS ? "Too many incorrect codes. Request a new code." : "Invalid OTP",
             });
         }
-        else if(otp!==recentotp[0].otp)
-        {
-            return res.status(401).json({
-                sucsess:false,
-                message:"Invalid OTP",
-            });
+
+        const consumed = await OTP.updateOne(
+            {
+                _id: otpRecord._id,
+                otpHash: otpRecord.otpHash,
+                consumedAt: null,
+                otpExpiresAt: { $gt: now },
+                attempts: { $lt: OTP_MAX_ATTEMPTS },
+            },
+            { $set: { consumedAt: now } }
+        );
+        if (!consumed.modifiedCount) {
+            return res.status(401).json({ sucsess: false, message: "OTP is invalid, expired, or already used." });
         }
 
         //otp matched and then hash the password and save db
@@ -175,7 +210,7 @@ exports.signUp = async(req,res)=>{
         
     } catch (error) {
         
-        console.log("error in signup",error);
+        console.error("Signup request failed");
         return res.status(500).json({
             sucsess:false,
             message:"something wrong with signup ,please try again"
@@ -262,18 +297,15 @@ exports.login = async(req,res)=>{
 exports.changepassword = async(req,res)=>{
     try {
         
-        console.log("user id",req.user.id);
         const userDetails = await User.findById(req.user.id);
         if(!userDetails)
         {
-            console.log("user not found");
             res.status(404).json({
                 sucsess:false,
                 message:"user not found"
             })
         }
 
-        console.log("user",userDetails);
         //fetch data from req body
         const{oldPassword,newPassword,confirmnewPassword} = req.body;
 
@@ -300,12 +332,10 @@ exports.changepassword = async(req,res)=>{
 
         if(await bcrypt.compare(oldPassword,userDetails.password))
         {  
-            console.log("password comparision hogya");
             const hashedpassword = await bcrypt.hash(newPassword,10);
 
             const resposnsee = await User.findOneAndUpdate({_id:userDetails._id},{password:hashedpassword},{new:true});
 
-            console.log(resposnsee);
 
             try {
                 
@@ -316,7 +346,7 @@ exports.changepassword = async(req,res)=>{
                 );
 
             } catch (error) {
-                console.error("Password-update email failed", error.message);
+                console.error("Password-update email submission failed");
             }
 
           

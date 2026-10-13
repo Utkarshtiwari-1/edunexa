@@ -2,14 +2,13 @@ import { useState } from "react"
 import OTPInput from "react-otp-input";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { Signupuser } from "../service/operations";
+import { Otpsender, Signupuser } from "../service/operations";
 
 function Otpverification(){
     const[otp,setotp] = useState("");
     const {formdata} = useSelector((state)=>state.profile);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    console.log(formdata);
     const {FirstName,LastName,email,password,confirmpassword,accountType} = formdata;
 
     function signupclickhandler(event){
@@ -51,9 +50,9 @@ function Otpverification(){
                 <Link to="/login">
                     <p className="text-richblack-5 flex items-center gap-x-2">Back to login</p>
                 </Link>
-                <div>
-                    Resend it
-                </div>
+                <button type="button" onClick={() => dispatch(Otpsender(email, navigate))} className="text-richblack-5 underline">
+                    Resend code
+                </button>
             </div>
         </div>
     )

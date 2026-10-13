@@ -1,0 +1,5 @@
+const passwordResetTemplate = (url) => `<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reset your Edunexa password</title></head>
+<body style="margin:0;background:#f4f6f8;font-family:Arial,sans-serif;color:#202938"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:32px 12px"><tr><td align="center"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;background:#fff;border-radius:12px;padding:32px"><tr><td><h1 style="font-size:22px;margin:0 0 16px">Reset your password</h1><p style="font-size:16px;line-height:1.5">Use the link below to choose a new password. It expires in 5 minutes.</p><p style="margin:24px 0"><a href="${url}" style="display:inline-block;background:#f5c400;color:#202938;text-decoration:none;padding:12px 20px;border-radius:6px;font-weight:bold">Reset password</a></p><p style="font-size:14px;line-height:1.5">If you did not request this, ignore this email. Do not share this link.</p></td></tr></table></td></tr></table></body></html>`;
+
+module.exports = passwordResetTemplate;

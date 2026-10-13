@@ -1,31 +1,29 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 require("dotenv").config();
 
-const mailsender = async (email, title, html) => {
-    if (!process.env.MAIL_HOST || !process.env.MAIL_USER || !process.env.MAIL_PASS) {
+let resendClient;
+
+const getResend = () => {
+    if (!process.env.RESEND_API_KEY) {
         throw new Error("Email service is not configured");
     }
+    if (!resendClient) resendClient = new Resend(process.env.RESEND_API_KEY);
+    return resendClient;
+};
 
-    const transporter = nodemailer.createTransport({
-        host: process.env.MAIL_HOST,
-        port: Number(process.env.MAIL_PORT || 587),
-        secure: process.env.MAIL_SECURE === "true",
-        auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASS,
-        },
-        // Do not leave the signup request hanging for Nodemailer's default timeout.
-        // connectionTimeout: 10000,
-        // greetingTimeout: 10000,
-        // socketTimeout: 15000,
-    });
+const mailsender = async (email, title, html) => {
+    if (!process.env.EMAIL_FROM) {
+        throw new Error("Email sender is not configured");
+    }
 
-    return transporter.sendMail({
-        from: process.env.MAIL_FROM || `StudyNotion <${process.env.MAIL_USER}>`,
+    const { data, error } = await getResend().emails.send({
+        from: process.env.EMAIL_FROM,
         to: email,
         subject: title,
         html,
     });
+    if (error) throw new Error("Email submission failed");
+    return data;
 };
 
 module.exports = mailsender;

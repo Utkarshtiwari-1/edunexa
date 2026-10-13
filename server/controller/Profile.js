@@ -15,7 +15,6 @@ exports.upadteProfile = async(req,res)=>{
         
 
         const user = await User.findById(usrid);
-        console.log(user);
         const profileid = user.additionalDetails;
         const profiledetails = await Profile.findById(profileid);
         //upadate
@@ -97,7 +96,6 @@ exports.getAllUserDetails = async (req, res) => {
 		const userDetails = await User.findById(id)
 			.populate("additionalDetails")
 			.exec();
-		console.log(userDetails);
 		res.status(200).json({
 			success: true,
 			message: "User Data fetched successfully",
