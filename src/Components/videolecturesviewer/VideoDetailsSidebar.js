@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { setCompletedLectures,setCourseSectionData,setEntireCourseData,setTotalNoOfLectures, setcurrentsection, setcurrentsubsection } from "../../slices/viewCourseSlice";
 import { useEffect, useState } from "react";
 import { getfullcoursedetais } from "../../service/operations";
@@ -10,12 +10,9 @@ function VideoDetailsSidebar({setreviewmodal})
 {
     const navigate = useNavigate();
     const {courseid,sectionid,subsectionid} = useParams();
-    const {courseSectionData,completedLectures,
-        currentsection,currentsubsection
-    } = useSelector((state)=>state.viewCourse);
+    const {courseSectionData,completedLectures,currentsection,currentsubsection} = useSelector((state)=>state.viewCourse);
     const dispatch = useDispatch();
     const [activestatus,setactivestatus] = useState("");
-    const location = useLocation();
 
     useEffect(()=>{
         const entirecoursedata = async()=>{
@@ -33,12 +30,30 @@ function VideoDetailsSidebar({setreviewmodal})
 
             console.log("total lec",lec);
             dispatch(setTotalNoOfLectures(lec));
-            console.log("current sec",currentsection);
-            console.log("current-subsec",currentsubsection);
-            console.log("true ar false",completedLectures);
         }
         entirecoursedata();
-    },[completedLectures, courseid, currentsection, currentsubsection, dispatch, location.pathname, sectionid, subsectionid])
+    },[courseid, dispatch]);
+
+    useEffect(() => {
+        const selectedSectionId = sectionid?.trim();
+        const selectedSubsectionId = subsectionid?.trim();
+        const selectedSection = courseSectionData.find(
+            (section) => section._id === selectedSectionId
+        );
+        const selectedSubsection = selectedSection?.subsection?.find(
+            (subsection) => subsection._id === selectedSubsectionId
+        );
+
+        if (selectedSection) {
+            setactivestatus(selectedSection._id);
+            if (selectedSection._id !== currentsection?._id) {
+                dispatch(setcurrentsection(selectedSection));
+            }
+        }
+        if (selectedSubsection && selectedSubsection._id !== currentsubsection?._id) {
+            dispatch(setcurrentsubsection(selectedSubsection));
+        }
+    }, [courseSectionData, sectionid, subsectionid, currentsection, currentsubsection, dispatch]);
 
     
 

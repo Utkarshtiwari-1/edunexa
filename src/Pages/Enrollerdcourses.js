@@ -58,8 +58,7 @@ function Enrolledcourses(){
                             enrolledcourses.map((course,index)=>{
                                 return(
                                     <>
-                                        <div onClick={()=>navigate(`/dashboard/course/${course?._id}/section/${course?.courseContent[0]?._id}
-                                    /sub-section/${course?.courseContent[0]?.subsection[0]?._id}`)}>
+                                        <div onClick={()=>navigate(`/dashboard/course/${course?._id}/section/${course?.courseContent[0]?._id?.trim()}/sub-section/${course?.courseContent[0]?.subsection[0]?._id?.trim()}`)}>
                                             <div className="flex gap-5 items-center cursor-pointer">
                                                 <img src={course.thumbnail} alt={course.courseName || "Course thumbnail"} className="w-[130px] h-[130px] object-contain rounded-md"></img>
                                                 <div className="flex flex-col text-white">
